@@ -1,14 +1,15 @@
 const fs = require('fs');
 const path = require('path');
+const { stdout } = require('process');
 
 fs.readFile(
   path.join(__dirname, 'text.txt'),
   { encoding: 'utf-8' },
   (err, data) => {
     if (err) {
-      console.log(err);
+      stdout.write(err);
     } else {
-      console.log(data);
+      stdout.write(data);
     }
   },
 );
