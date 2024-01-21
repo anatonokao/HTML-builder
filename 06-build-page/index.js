@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { stdout } = require('node:process');
 
 const outputFolder = path.join(__dirname, 'project-dist');
 
@@ -20,10 +21,11 @@ fs.promises.mkdir(outputFolder, { recursive: true }).then(async () => {
   await copyAssets(assetsPath, path.join(outputFolder, 'assets'));
   await mergeStyles(stylesPath, outputFolder);
 
-  console.log(colorizeText('Page successfully built!', '\x1b[32m'));
-  console.log(
+  stdout.write(colorizeText('Page successfully built!', '\x1b[32m') + '\n');
+  stdout.write(
     colorizeText('Output is in ', '\x1b[33m') +
-      colorizeText(outputFolder, '\x1b[36m'),
+      colorizeText(outputFolder, '\x1b[36m') +
+      '\n',
   );
 });
 
@@ -49,7 +51,7 @@ async function copyAssets(src, target) {
   await fs.promises.mkdir(target, { recursive: true }).then(() => {
     fs.readdir(src, { withFileTypes: true }, (err, files) => {
       if (err) {
-        console.log(err);
+        stdout.write(err);
       }
 
       files.forEach((file) => {
@@ -64,7 +66,7 @@ async function copyAssets(src, target) {
             path.join(target, file.name),
             (err) => {
               if (err) {
-                console.log(err);
+                stdout.write(err);
               }
             },
           );
@@ -82,7 +84,7 @@ async function mergeStyles(src, target) {
     await fs.promises.readFile(path.join(src, file), 'utf-8').then((data) => {
       fs.appendFile(path.join(target, 'style.css'), data, (err) => {
         if (err) {
-          console.log(err);
+          stdout.write(err);
         }
       });
     });
@@ -94,7 +96,7 @@ async function clearFolder(src) {
   if (await fs.promises.access(src)) {
     await fs.promises.rm(src, { recursive: true }, (err) => {
       if (err) {
-        console.log(err);
+        stdout.write(err);
       }
     });
     return true;

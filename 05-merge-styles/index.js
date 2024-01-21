@@ -1,16 +1,17 @@
 const fs = require('fs');
 const path = require('path');
+const { stdout } = require('node:process');
 
 const stylesDirPath = path.join(__dirname, 'styles');
 const outputFile = path.join(__dirname, 'project-dist', 'bundle.css');
 
 fs.readdir(stylesDirPath, { withFileTypes: true }, (err, files) => {
   if (err) {
-    console.log(err);
+    stdout.write(err);
   } else {
     fs.writeFile(outputFile, '', (err) => {
       if (err) {
-        console.log(err);
+        stdout.write(err);
       }
     });
 
@@ -18,18 +19,18 @@ fs.readdir(stylesDirPath, { withFileTypes: true }, (err, files) => {
       if (file.isFile() && path.extname(file.name) === '.css') {
         fs.readFile(path.join(stylesDirPath, file.name), (err, data) => {
           if (err) {
-            console.log(err);
+            stdout.write(err);
           } else {
             fs.appendFile(outputFile, data, (err) => {
               if (err) {
-                console.log(err);
+                stdout.write(err);
               }
             });
           }
         });
       }
     });
-    console.log(colorizeText('Styles successfully merged', '\x1b[32m'));
+    stdout.write(colorizeText('Styles successfully merged', '\x1b[32m'));
   }
 });
 
